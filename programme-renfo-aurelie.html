@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Programme Renfo — Aurélie</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #161616;
+    --card: #1e1e1e;
+    --accent: #e8ff3c;
+    --accent2: #ff5733;
+    --text: #f0ede8;
+    --muted: #888;
+    --border: #2a2a2a;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; overflow-x: hidden; }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 9999; opacity: 0.4; }
+
+  .hero { padding: 60px 40px 40px; max-width: 940px; margin: 0 auto; }
+  .tag { display: inline-block; background: var(--accent); color: #000; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 12px; margin-bottom: 20px; }
+  h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(60px, 12vw, 110px); line-height: 0.92; letter-spacing: 0.02em; margin-bottom: 8px; }
+  h1 span { color: var(--accent); display: block; }
+  .subtitle { font-size: 15px; color: var(--muted); font-weight: 300; margin-top: 16px; letter-spacing: 0.03em; }
+  .subtitle strong { color: var(--text); font-weight: 500; }
+
+  .hero-line { height: 1px; max-width: 940px; margin: 36px auto; padding: 0 40px; }
+  .hero-line::after { content: ''; display: block; height: 1px; background: linear-gradient(to right, var(--accent), transparent); }
+
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; max-width: 940px; margin: 0 auto; padding: 0 40px 48px; }
+  @media (max-width: 660px) { .grid { grid-template-columns: 1fr; padding: 0 20px 40px; } .hero { padding: 40px 20px 20px; } }
+
+  .session-card { background: var(--card); border: 1px solid var(--border); border-radius: 2px; overflow: hidden; animation: fadeUp 0.6s ease backwards; }
+  .session-card:nth-child(2) { animation-delay: 0.12s; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .session-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 14px; }
+  .session-num { font-family: 'Bebas Neue', sans-serif; font-size: 48px; line-height: 1; color: var(--accent); opacity: 0.3; min-width: 44px; }
+  .session-info h2 { font-family: 'Bebas Neue', sans-serif; font-size: 26px; letter-spacing: 0.05em; }
+  .session-info p { font-size: 12px; color: var(--muted); font-weight: 300; margin-top: 2px; letter-spacing: 0.05em; text-transform: uppercase; }
+  .badge { margin-left: auto; background: var(--surface); border: 1px solid var(--border); color: var(--muted); font-size: 11px; font-weight: 500; padding: 4px 10px; border-radius: 100px; white-space: nowrap; }
+
+  .session-body { padding: 20px 24px; }
+  .objective { background: var(--surface); border-left: 3px solid var(--accent); padding: 10px 14px; margin-bottom: 20px; font-size: 13px; color: var(--muted); font-style: italic; }
+  .objective strong { color: var(--accent); font-style: normal; font-weight: 600; }
+
+  .block { margin-bottom: 22px; }
+  .block-title { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 0.18em; color: var(--accent2); text-transform: uppercase; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .block-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+  .time-chip { display: inline-block; background: rgba(255,87,51,0.12); color: var(--accent2); border: 1px solid rgba(255,87,51,0.25); font-size: 10px; font-weight: 700; letter-spacing: 0.1em; padding: 2px 8px; border-radius: 2px; margin-left: auto; }
+
+  .exercise-list { list-style: none; }
+  .exercise-list li { padding: 10px 0; border-bottom: 1px solid var(--border); }
+  .exercise-list li:last-child { border-bottom: none; }
+  .ex-row { display: grid; grid-template-columns: 1fr auto; align-items: start; gap: 12px; }
+  .ex-name { font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.3; }
+  .ex-note { font-size: 12px; color: var(--muted); font-weight: 300; margin-top: 3px; }
+  .ex-reps { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--accent); white-space: nowrap; text-align: right; letter-spacing: 0.05em; }
+  .ex-reps small { display: block; font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 400; color: var(--muted); letter-spacing: 0.05em; text-transform: uppercase; }
+
+  /* Bouton vidéo — ouvre une recherche YouTube */
+  .vid-btn {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(255, 0, 0, 0.08);
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    color: #cc4444;
+    font-size: 10px; font-weight: 700; letter-spacing: 0.09em; text-transform: uppercase;
+    text-decoration: none;
+    padding: 3px 9px 3px 7px; border-radius: 3px; margin-top: 6px;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .vid-btn:hover { background: rgba(255,0,0,0.18); border-color: rgba(255,80,80,0.5); color: #ff6666; }
+  .vid-btn svg { flex-shrink: 0; }
+
+  /* Badge FR */
+  .fr-badge { display: inline-block; background: rgba(0,85,164,0.2); border: 1px solid rgba(0,85,164,0.3); color: #6699cc; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 1px 5px; border-radius: 2px; margin-left: 4px; vertical-align: middle; }
+
+  .rest-note { margin-top: 10px; font-size: 12px; color: var(--muted); font-weight: 300; text-align: right; font-style: italic; }
+  .tip-box { margin-top: 10px; background: rgba(232,255,60,0.05); border: 1px solid rgba(232,255,60,0.15); border-radius: 2px; padding: 12px 14px; font-size: 12px; color: var(--muted); line-height: 1.6; }
+  .tip-box strong { color: var(--accent); display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+
+  .progress-section { max-width: 940px; margin: 0 auto; padding: 0 40px 80px; }
+  @media (max-width: 660px) { .progress-section { padding: 0 20px 60px; } }
+  .progress-card { background: var(--card); border: 1px solid var(--border); padding: 24px; animation: fadeUp 0.6s ease 0.22s backwards; }
+  .progress-card h3 { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 0.1em; color: var(--text); margin-bottom: 16px; }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+  .step { background: var(--surface); border: 1px solid var(--border); padding: 14px; border-radius: 2px; }
+  .step-num { font-family: 'Bebas Neue', sans-serif; font-size: 32px; color: var(--accent); opacity: 0.2; line-height: 1; }
+  .step h4 { font-size: 13px; font-weight: 600; color: var(--text); margin: 4px 0 4px; }
+  .step p { font-size: 12px; color: var(--muted); font-weight: 300; line-height: 1.5; }
+
+  .footer { border-top: 1px solid var(--border); padding: 24px 40px; max-width: 940px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  .footer p { font-size: 12px; color: var(--muted); font-weight: 300; }
+  .footer span { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent); letter-spacing: 0.1em; }
+
+  .vid-legend { max-width: 940px; margin: 0 auto 10px; padding: 0 40px; font-size: 11px; color: #555; display: flex; align-items: center; gap: 6px; }
+  @media (max-width: 660px) { .vid-legend { padding: 0 20px; } }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Programme personnalisé · Aurélie</div>
+  <h1>RENFO<span>CORE</span></h1>
+  <p class="subtitle">
+    <strong>2 × 25 min</strong> de renforcement — Complément aux <strong>3 WODs CrossFit</strong><br>
+    Objectif : <strong>Toes to Bar</strong> + abdominaux durables
+  </p>
+</div>
+
+<div class="hero-line"></div>
+
+<div class="vid-legend">
+  <svg width="11" height="11" viewBox="0 0 24 24" fill="#c00"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+  Les boutons <strong style="color:#888">▶ YouTube</strong> ouvrent une recherche sur YouTube — toujours des vidéos disponibles
+</div>
+
+<div class="grid">
+
+  <!-- ===== SESSION A ===== -->
+  <div class="session-card">
+    <div class="session-header">
+      <div class="session-num">A</div>
+      <div class="session-info">
+        <h2>Gainages & Hollow</h2>
+        <p>Tension + gainage profond</p>
+      </div>
+      <div class="badge">25 min</div>
+    </div>
+    <div class="session-body">
+      <div class="objective"><strong>Focus :</strong> apprendre à verrouiller le corps en position creuse (hollow body), base absolue du Toes to Bar.</div>
+
+      <!-- Activation -->
+      <div class="block">
+        <div class="block-title">Activation <span class="time-chip">3 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Dead bug</div>
+                <div class="ex-note">Dos à plat, bras et jambes opposés, lombaires collées</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=dead+bug+exercise+tutorial+abdos" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=dead+bug+exercice+abdominaux+tutoriel+francais" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube <span class="fr-badge">FR</span>
+                </a>
+              </div>
+              <div class="ex-reps">3×8<small>reps/côté</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Cat-cow lent</div>
+                <div class="ex-note">Mobilisation lombaire, activation profonde</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=cat+cow+stretch+spine+mobility" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">1×10<small>reps</small></div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Bloc 1 -->
+      <div class="block">
+        <div class="block-title">Bloc 1 — Hollow body <span class="time-chip">10 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hollow hold au sol</div>
+                <div class="ex-note">Lombaires collées, menton rentré, bras tendus</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=hollow+body+hold+crossfit+tutorial" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=hollow+hold+position+creuse+crossfit+francais" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube <span class="fr-badge">FR</span>
+                </a>
+              </div>
+              <div class="ex-reps">3×20<small>sec → 30</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hollow rocks</div>
+                <div class="ex-note">Garder la forme, ne pas "casser" le corps</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=hollow+rocks+crossfit+core+tutorial" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×10<small>reps</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hanging knee raise</div>
+                <div class="ex-note">À la barre, genoux vers poitrine, sans balancement</div>
+                <a class="vid-btn" href="https://www.youtube.com/watch?v=iC_fu-XjNPo" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×8<small>reps</small></div>
+            </div>
+          </li>
+
+        </ul>
+        <div class="rest-note">Repos 45 sec entre séries</div>
+      </div>
+
+      <!-- Bloc 2 -->
+      <div class="block">
+        <div class="block-title">Bloc 2 — Gainage latéral <span class="time-chip">8 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Planche latérale tenue</div>
+                <div class="ex-note">Hanches en ligne, pas de chute lombaire</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=side+plank+hold+form+tutorial" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×25<small>sec/côté</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Planche latérale + élévation jambe</div>
+                <div class="ex-note">Abducteurs + obliques — progression</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=side+plank+leg+raise+obliques+tutorial" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">2×10<small>reps/côté</small></div>
+            </div>
+          </li>
+
+        </ul>
+        <div class="rest-note">Repos 40 sec entre séries</div>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Conseil Aurélie</strong>
+        La qualité prime sur la durée. Si les lombaires décollent → régresse (genoux fléchis, bras le long du corps).
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== SESSION B ===== -->
+  <div class="session-card">
+    <div class="session-header">
+      <div class="session-num">B</div>
+      <div class="session-info">
+        <h2>Hip Flexors & Hanging</h2>
+        <p>Flexion hanche + transfert barre</p>
+      </div>
+      <div class="badge">25 min</div>
+    </div>
+    <div class="session-body">
+      <div class="objective"><strong>Focus :</strong> renforcer les fléchisseurs de hanche et progresser sur les mouvements accrochés — chemin direct vers le T2B.</div>
+
+      <!-- Activation B -->
+      <div class="block">
+        <div class="block-title">Activation <span class="time-chip">3 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hanging passive hold</div>
+                <div class="ex-note">Suspension à la barre, épaules engagées (pas lâches)</div>
+                <a class="vid-btn" href="https://www.youtube.com/watch?v=XwryUTVQNIU" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">2×30<small>sec</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hip circles debout</div>
+                <div class="ex-note">Mobilisation hanche — 5 ronds dans chaque sens</div>
+                <a class="vid-btn" href="https://www.youtube.com/shorts/PZFKu9583Ms" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">1×10<small>reps</small></div>
+            </div>
+          </li>
+
+        </ul>
+      </div>
+
+      <!-- Bloc 1 B -->
+      <div class="block">
+        <div class="block-title">Bloc 1 — Fléchisseurs hanche <span class="time-chip">10 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">V-up au sol</div>
+                <div class="ex-note">Corps en V, mains et pieds décollent ensemble</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=v+up+ab+exercise+tutorial+form" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×10<small>reps</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Bicycle crunch lent</div>
+                <div class="ex-note">Rotation contrôlée, coude vers genou opposé</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=bicycle+crunch+slow+controlled+obliques+tutorial" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×12<small>reps/côté</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">L-sit sur parallettes / chaises</div>
+                <div class="ex-note">Jambes tendues ou genoux fléchis si besoin</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=l-sit+progression+tutorial+beginner+hip+flexors" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×10<small>sec</small></div>
+            </div>
+          </li>
+
+        </ul>
+        <div class="rest-note">Repos 45 sec entre séries</div>
+      </div>
+
+      <!-- Bloc 2 B — T2B -->
+      <div class="block">
+        <div class="block-title">Bloc 2 — Progression T2B <span class="time-chip">9 min</span></div>
+        <ul class="exercise-list">
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Hanging knee raise (strict)</div>
+                <div class="ex-note">Genoux à la poitrine, descente contrôlée</div>
+                <a class="vid-btn" href="https://www.youtube.com/watch?v=iC_fu-XjNPo" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+              </div>
+              <div class="ex-reps">3×8<small>reps</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Toes to knees (kipping progressif)</div>
+                <div class="ex-note">Initier le kipping puis genoux vers la barre</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=toes+to+bar+progression+crossfit+knees+to+bar+kipping" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=toes+to+bar+progression+crossfit+francais+tutoriel" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube <span class="fr-badge">FR</span>
+                </a>
+              </div>
+              <div class="ex-reps">3×6<small>reps</small></div>
+            </div>
+          </li>
+
+          <li>
+            <div class="ex-row">
+              <div>
+                <div class="ex-name">Toes to bar (partiel ou complet 🎯)</div>
+                <div class="ex-note">Monter autant que possible, retour contrôlé</div>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=toes+to+bar+kipping+crossfit+tutorial+technique" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube
+                </a>
+                <a class="vid-btn" href="https://www.youtube.com/results?search_query=toes+to+bar+crossfit+technique+francais" target="_blank" rel="noopener">
+                  <svg width="9" height="9" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg> YouTube <span class="fr-badge">FR</span>
+                </a>
+              </div>
+              <div class="ex-reps">2×MAX<small>qualité</small></div>
+            </div>
+          </li>
+
+        </ul>
+        <div class="rest-note">Repos 60 sec entre séries</div>
+      </div>
+
+      <div class="tip-box">
+        <strong>💡 Conseil Aurélie</strong>
+        Sur le kipping : l'impulsion vient d'un "arc → creux" corps entier. Ce ne sont pas les jambes seules qui montent — c'est tout le corps qui bascule.
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- PROGRESSION -->
+<div class="progress-section">
+  <div class="progress-card">
+    <h3>🗓 PLAN DE PROGRESSION SUR 6 SEMAINES</h3>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">S1</div>
+        <h4>Semaines 1–2</h4>
+        <p>Maîtriser le hollow hold & les knee raises. Sentir la tension abdominale.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">S2</div>
+        <h4>Semaines 3–4</h4>
+        <p>+5 sec sur les holds, ajouter les toes-to-knees, premiers kips.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">S3</div>
+        <h4>Semaines 5–6</h4>
+        <p>Chaîner 3–5 T2B consécutifs. Travailler la série non-stop.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">✓</div>
+        <h4>Placement semaine</h4>
+        <p><strong>Session A</strong> après WOD 1<br><strong>Session B</strong> après WOD 2<br>WOD 3 = récup active</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  <p>Programme conçu pour Aurélie · Complément CrossFit · 2 × 25 min</p>
+  <span>OBJECTIF T2B 🎯</span>
+</div>
+
+</body>
+</html>
